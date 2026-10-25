@@ -179,10 +179,12 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Routes
 const exercisesRouter = require('./routes/exercises');
+const workoutSessionsRouter = require('./routes/workoutSessions');
 const userRouter = require('./routes/user');
 const healthRouter = require('./routes/health');
 
 app.use('/api/exercises', exercisesRouter);
+app.use('/api/workout-sessions', workoutSessionsRouter);
 app.use('/api/user', userRouter);
 app.use('/api/health', healthRouter);
 

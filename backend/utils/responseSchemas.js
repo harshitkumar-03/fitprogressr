@@ -55,6 +55,37 @@ const exerciseDocumentSchema = {
   additionalProperties: true,
 };
 
+
+const workoutExerciseSchema = {
+  type: 'object',
+  required: ['name', 'duration', 'completed'],
+  properties: {
+    _id: { type: 'string' },
+    name: { type: 'string' },
+    duration: { type: 'number', minimum: 0 },
+    completed: { type: 'boolean' },
+  },
+  additionalProperties: true,
+};
+
+const workoutSessionSchema = {
+  type: 'object',
+  required: ['_id', 'userId', 'date', 'exercises'],
+  properties: {
+    _id: { type: 'string' },
+    userId: { type: 'string' },
+    date: { type: 'string' },
+    exercises: {
+      type: 'array',
+      items: workoutExerciseSchema,
+    },
+    createdAt: { type: 'string' },
+    updatedAt: { type: 'string' },
+  },
+  additionalProperties: true,
+};
+
+
 const messageSchema = {
   type: 'object',
   required: ['message'],
@@ -133,6 +164,15 @@ const routeSchemas = new Map([
     required: ['message', 'user'],
     properties: { ...messageSchema.properties, user: userSchema },
   }],
+
+  ['POST /api/workout-sessions/', workoutSessionSchema],
+  ['GET /api/workout-sessions/', {
+    type: 'array',
+    items: workoutSessionSchema,
+  }],
+  ['GET /api/workout-sessions/:sessionId', workoutSessionSchema],
+  ['PUT /api/workout-sessions/:sessionId', workoutSessionSchema],
+
   ['POST /api/user/:userId/updateTotalDays', {
     ...messageSchema,
     required: ['message', 'totalDays'],
