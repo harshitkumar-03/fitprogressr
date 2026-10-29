@@ -165,6 +165,36 @@ const routeSchemas = new Map([
     properties: { ...messageSchema.properties, user: userSchema },
   }],
 
+  ['GET /api/user-achievements/', {
+    type: 'array',
+    items: {
+      type: 'object',
+      required: ['_id', 'userId', 'achievementId', 'earnedAt'],
+      properties: {
+        _id: { type: 'string' },
+        userId: { type: 'string' },
+        achievementId: {
+          type: 'object',
+          required: ['_id', 'name', 'description', 'xpReward', 'condition'],
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            description: { type: 'string' },
+            xpReward: { type: 'number' },
+            condition: {
+              type: 'object',
+              required: ['type', 'threshold'],
+              properties: {
+                type: { enum: ['workoutCount', 'streak'] },
+                threshold: { type: 'number' },
+              },
+            },
+          },
+        },
+        earnedAt: { type: 'string' },
+      },
+    },
+  }],
   ['POST /api/workout-sessions/', workoutSessionSchema],
   ['GET /api/workout-sessions/', {
     type: 'array',

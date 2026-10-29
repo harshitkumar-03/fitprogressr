@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 
 const WorkoutSession = require('../models/workoutSession.model');
+const achievementService = require('../services/achievementService');
 const verifyToken = require('../middleware/jwtAuth');
 const { getApiErrorResponse } = require('../utils/apiErrors');
 const { sanitizePlainText } = require('../utils/sanitize');
@@ -74,6 +75,13 @@ router.post('/', async (req, res) => {
         completed: exercise.completed ?? false,
       })),
     });
+
+    try {
+      await achievementService.evaluateAchievements(req.user.id);
+    } catch (achievementError) {
+      // Gamification failures must not fail an already-saved workout.
+      console.error('Achievement evaluation failed:', achievementError.message);
+    }
 
     return res.status(201).json(session);
   } catch (error) {
