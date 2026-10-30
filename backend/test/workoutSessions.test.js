@@ -7,11 +7,13 @@ const jwt = require('jsonwebtoken');
 process.env.JWT_SECRET = 'route-test-secret';
 
 const WorkoutSession = require('../models/workoutSession.model');
+const achievementService = require('../services/achievementService');
 const workoutSessionsRouter = require('../routes/workoutSessions');
 const { validateApiResponse } = require('../utils/responseSchemas');
 
 test('workout session CRUD validates input, scopes access to the user, and returns valid responses', async () => {
   const originalCreate = WorkoutSession.create;
+  const originalEvaluateAchievements = achievementService.evaluateAchievements;
   const originalFind = WorkoutSession.find;
   const originalFindOne = WorkoutSession.findOne;
   const originalFindOneAndUpdate = WorkoutSession.findOneAndUpdate;
@@ -33,6 +35,8 @@ test('workout session CRUD validates input, scopes access to the user, and retur
   let findOneQuery;
   let updateQuery;
   let deleteQuery;
+
+  achievementService.evaluateAchievements = async () => [];
 
   WorkoutSession.create = async (data) => {
     createCalls++;
@@ -155,6 +159,7 @@ test('workout session CRUD validates input, scopes access to the user, and retur
     assert.equal(deleteQuery.userId, userId);
     assert.equal(deleteQuery._id, sessionId);
   } finally {
+    achievementService.evaluateAchievements = originalEvaluateAchievements;
     WorkoutSession.create = originalCreate;
     WorkoutSession.find = originalFind;
     WorkoutSession.findOne = originalFindOne;
