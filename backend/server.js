@@ -181,10 +181,12 @@ process.on('unhandledRejection', (reason, promise) => {
 const exercisesRouter = require('./routes/exercises');
 const userRouter = require('./routes/user');
 const healthRouter = require('./routes/health');
+const goalsRouter = require('./routes/goals');
 
 app.use('/api/exercises', exercisesRouter);
 app.use('/api/user', userRouter);
 app.use('/api/health', healthRouter);
+app.use('/api/goals', goalsRouter);
 
 // Global error handler (must be before 404 handler)
 app.use((err, req, res, next) => {
